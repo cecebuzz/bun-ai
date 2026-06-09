@@ -1385,7 +1385,7 @@ function Paywall({t,codeMode,onClose,onUnlock}){
   const [email,setEmail]=useState("");
   const [err,setErr]=useState("");
   const [loading,setLoading]=useState(false);
-  const CELINE="https://i.postimg.cc/Btf0zFCB/IMG-5618-Photoroom.png";
+  const CELINE="https://i.postimg.cc/J40Yw0F3/buzzceline.png";
   const tryCode=()=>{if(code.trim().toUpperCase()===PREMIUM_CODE)onUnlock("code");else setErr(t("wrongCode"));};
   const tryEmail=async()=>{
     const e=email.trim().toLowerCase();
