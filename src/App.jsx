@@ -41,6 +41,7 @@ const CSS = `
 .bar-fill{background:linear-gradient(90deg,#C96878,#e08a96);border-radius:999px;transition:width .6s cubic-bezier(.4,0,.2,1);}
 .header-blur{background:rgba(246,241,236,.9);backdrop-filter:blur(12px);border-bottom:1px solid #EAE0D8;}
 .sidebar{background:rgba(255,253,252,.6);border-right:1px solid #EAE0D8;}
+@media(max-width:640px){.desktop-sidebar{display:none !important;}}
 .modal-overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;padding:1rem;background:rgba(30,20,18,.5);backdrop-filter:blur(4px);}
 @media(min-width:640px){.modal-overlay{align-items:center;}}
 .modal-card{background:#FFFDFC;border:1px solid #EAE0D8;border-radius:28px;box-shadow:0 24px 60px rgba(46,38,35,.22);width:100%;max-width:400px;padding:2rem;animation:slideUp .28s cubic-bezier(.4,0,.2,1);}
@@ -94,6 +95,7 @@ const IcLock   = p=><Svg {...p}><rect {...SI} x="5" y="11" width="14" height="9"
 const IcSend   = p=><Svg {...p}><path {...SI} d="M5 12h13M12 6l6 6-6 6"/></Svg>;
 const IcCheck  = p=><Svg {...p}><path {...SI} d="M5 12l5 5 9-9"/></Svg>;
 const IcArrow  = p=><Svg {...p}><path {...SI} d="M9 18l6-6-6-6"/></Svg>;
+const IcPlus   = p=><Svg {...p}><path {...SI} d="M12 5v14M5 12h14"/></Svg>;
 const IcClock  = p=><Svg {...p}><circle {...SI} cx="12" cy="12" r="9"/><path {...SI} d="M12 7v5l3 3"/></Svg>;
 const IcPen    = p=><Svg {...p}><path {...SI} d="M12 20h9"/><path {...SI} d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></Svg>;
 const IcBook   = p=><Svg {...p}><path {...SI} d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path {...SI} d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></Svg>;
@@ -495,7 +497,7 @@ export default function App(){
     <div className="bun-root">
       <Style/>
       <div style={{display:"flex",maxWidth:1080,margin:"0 auto",minHeight:"100vh"}}>
-        <aside className="sidebar" style={{width:220,flexShrink:0,display:"flex",flexDirection:"column",padding:"1.75rem 1rem",position:"sticky",top:0,height:"100vh",overflowY:"auto"}}>
+        <aside className="sidebar desktop-sidebar" style={{width:220,flexShrink:0,display:"flex",flexDirection:"column",padding:"1.75rem 1rem",position:"sticky",top:0,height:"100vh",overflowY:"auto"}}>
           <div style={{textAlign:"center",marginBottom:"2rem"}}>
             <div style={{display:"flex",justifyContent:"center"}} className="t-pink"><IcRabbit s={40}/></div>
             <div style={{fontWeight:600,fontSize:"1.35rem",marginTop:".5rem"}}>Bun AI</div>
@@ -645,13 +647,15 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
   const [input,setInput]=useState("");
   const [loading,setLoading]=useState(false);
   const endRef=useRef(null);
-  const CELINE="https://i.postimg.cc/J40Yw0F3/buzzceline.png";
+  const CELINE="https://i.postimg.cc/Btf0zFCB/IMG-5618-Photoroom.png";
   useEffect(()=>save(K.chat,msgs),[msgs]);
   useEffect(()=>{endRef.current?.scrollIntoView({behavior:"smooth"});},[msgs,loading]);
   const dailyHit=premium&&pData.date===today()&&pData.count>=DAILY_LIMIT;
   const freeHit=!premium&&freeUsed>=FREE_LIMIT;
   const remaining=premium?DAILY_LIMIT-pData.count:FREE_LIMIT-freeUsed;
   const shown=msgs.filter(m=>!m.hidden);
+  const [confirmNew,setConfirmNew]=useState(false);
+  const newConversation=()=>{setMsgs([]);save(K.chat,[]);setConfirmNew(false);};
   const sendMsg=async()=>{
     const text=input.trim();
     if(!text||loading)return;
@@ -659,7 +663,7 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
     if(dailyHit)return;
     const next=[...msgs,{role:"user",content:text}];
     setMsgs(next);setInput("");setLoading(true);
-    const apiMsgs=next.map(({role,content})=>({role,content}));
+    const apiMsgs=next.slice(-5).map(({role,content})=>({role,content}));
     const reply=await askCeline(apiMsgs,rabbit,accessToken);
     setMsgs([...next,{role:"assistant",content:reply}]);setLoading(false);
     if(premium)setPData({count:(pData.date===today()?pData.count:0)+1,date:today()});
@@ -669,8 +673,20 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
     <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 120px)"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0,marginBottom:".75rem"}}>
         <h2 style={{fontWeight:600,fontSize:"1.1rem",display:"flex",alignItems:"center",gap:".5rem"}}><span className="t-pink"><IcChat s={20}/></span> {t("ask")}</h2>
-        {premium&&!dailyHit&&<span style={{fontSize:".72rem",color:"#C96878",fontWeight:600,background:"rgba(201,104,120,.1)",padding:".25rem .7rem",borderRadius:999}}>{t("msgsLeft")(Math.max(0,remaining))}</span>}
+        <div style={{display:"flex",alignItems:"center",gap:".6rem"}}>
+          {shown.length>0&&<button onClick={()=>setConfirmNew(true)} style={{background:"none",border:"none",cursor:"pointer",color:"#C96878",fontSize:".75rem",fontWeight:600,fontFamily:"'Poppins',sans-serif",display:"flex",alignItems:"center",gap:".3rem",padding:".25rem .5rem",borderRadius:999}}><IcPlus s={14}/> New</button>}
+          {premium&&!dailyHit&&<span style={{fontSize:".72rem",color:"#C96878",fontWeight:600,background:"rgba(201,104,120,.1)",padding:".25rem .7rem",borderRadius:999}}>{t("msgsLeft")(Math.max(0,remaining))}</span>}
+        </div>
       </div>
+      {confirmNew&&(
+        <div style={{background:"rgba(201,104,120,.07)",border:"1.5px solid rgba(201,104,120,.25)",borderRadius:14,padding:"1rem",marginBottom:".75rem",flexShrink:0}}>
+          <p style={{fontSize:".84rem",lineHeight:1.5,marginBottom:".75rem"}}>Start a new conversation? This will clear the current chat.</p>
+          <div style={{display:"flex",gap:".5rem"}}>
+            <button onClick={newConversation} className="btn" style={{flex:1,padding:".55rem",fontSize:".78rem"}}>Yes, start fresh</button>
+            <button onClick={()=>setConfirmNew(false)} className="btn-ghost" style={{flex:1,padding:".55rem",fontSize:".78rem"}}>Cancel</button>
+          </div>
+        </div>
+      )}
       <div className="card flex-1 overflow-y-auto" style={{padding:"1rem",display:"flex",flexDirection:"column",gap:".75rem",minHeight:0}}>
         {shown.length===0 ? (
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",textAlign:"center",gap:"1rem",padding:"1rem"}}>
@@ -1385,7 +1401,7 @@ function Paywall({t,codeMode,onClose,onUnlock}){
   const [email,setEmail]=useState("");
   const [err,setErr]=useState("");
   const [loading,setLoading]=useState(false);
-  const CELINE="https://i.postimg.cc/J40Yw0F3/buzzceline.png";
+  const CELINE="https://i.postimg.cc/Btf0zFCB/IMG-5618-Photoroom.png";
   const tryCode=()=>{if(code.trim().toUpperCase()===PREMIUM_CODE)onUnlock("code");else setErr(t("wrongCode"));};
   const tryEmail=async()=>{
     const e=email.trim().toLowerCase();
