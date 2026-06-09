@@ -645,7 +645,7 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
   const [input,setInput]=useState("");
   const [loading,setLoading]=useState(false);
   const endRef=useRef(null);
-  const CELINE="https://i.postimg.cc/Btf0zFCB/IMG-5618-Photoroom.png";
+  const CELINE="https://i.postimg.cc/J40Yw0F3/buzzceline.png";
   useEffect(()=>save(K.chat,msgs),[msgs]);
   useEffect(()=>{endRef.current?.scrollIntoView({behavior:"smooth"});},[msgs,loading]);
   const dailyHit=premium&&pData.date===today()&&pData.count>=DAILY_LIMIT;
