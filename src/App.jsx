@@ -103,7 +103,7 @@ const IcX      = p=><Svg {...p}><path {...SI} d="M18 6L6 18M6 6l12 12"/></Svg>;
 const IcUser   = p=><Svg {...p}><circle {...SI} cx="12" cy="8" r="3.6"/><path {...SI} d="M5 20c0-3.9 3.1-6.6 7-6.6s7 2.7 7 6.6"/></Svg>;
 
 const BRAND_IMG = "https://i.postimg.cc/xTGDCc5k/buzz-icone.png";
-const IcRabbit = ({s=28}) => <img src={BRAND_IMG} alt="Buzz" width={s} height={s} style={{width:s,height:s,objectFit:"contain",display:"block"}}/>;
+const IcRabbit = ({s=32}) => <img src={BRAND_IMG} alt="Buzz" width={s} height={s} style={{width:s,height:s,objectFit:"contain",display:"block"}}/>;
 
 
 const K={premium:"bp",free:"bf",pmsgs:"bpm",pdate:"bpd",rabbit:"br",bonding:"bnd_v2",litter:"bli_v3",chat:"bc",email:"be",welcomed:"bw"};
@@ -458,7 +458,7 @@ export default function App(){
       <div className="bun-root flex items-center justify-center" style={{minHeight:"100vh",padding:"1.5rem"}}>
         <Style/>
         <div style={{maxWidth:360,width:"100%",textAlign:"center"}}>
-          <div style={{display:"flex",justifyContent:"center",marginBottom:"1rem"}} className="t-pink"><IcRabbit s={64}/></div>
+          <div style={{display:"flex",justifyContent:"center",marginBottom:"1rem"}} className="t-pink"><IcRabbit s={78}/></div>
           <h1 style={{fontWeight:600,fontSize:"2.1rem"}}>Welcome to Bun AI</h1>
           <p className="t-muted" style={{fontSize:".9rem",marginTop:".6rem",marginBottom:"2.25rem",lineHeight:1.6}}>{T.tag}</p>
           <button onClick={()=>{setWelcomed(true);setView("chat");}} className="btn w-full" style={{padding:".85rem",fontSize:".95rem"}}>
@@ -499,7 +499,7 @@ export default function App(){
       <div style={{display:"flex",maxWidth:1080,margin:"0 auto",minHeight:"100vh"}}>
         <aside className="sidebar desktop-sidebar" style={{width:220,flexShrink:0,display:"flex",flexDirection:"column",padding:"1.75rem 1rem",position:"sticky",top:0,height:"100vh",overflowY:"auto"}}>
           <div style={{textAlign:"center",marginBottom:"2rem"}}>
-            <div style={{display:"flex",justifyContent:"center"}} className="t-pink"><IcRabbit s={48}/></div>
+            <div style={{display:"flex",justifyContent:"center"}} className="t-pink"><IcRabbit s={52}/></div>
             <div style={{fontWeight:600,fontSize:"1.35rem",marginTop:".5rem"}}>Bun AI</div>
             {premium&&<div className="pill-premium" style={{marginTop:".5rem",display:"inline-flex"}}><IcCrown s={11}/> PREMIUM</div>}
           </div>
@@ -690,7 +690,7 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
       <div className="card flex-1 overflow-y-auto" style={{padding:"1rem",display:"flex",flexDirection:"column",gap:".75rem",minHeight:0}}>
         {shown.length===0 ? (
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",textAlign:"center",gap:"1rem",padding:"1rem"}}>
-            <img src={CELINE} alt="Céline" style={{width:110,height:110,borderRadius:"50%",objectFit:"cover",border:"3px solid #F0E8E5",boxShadow:"0 4px 20px rgba(46,38,35,.12)"}}/>
+            <img src={CELINE} alt="Céline" style={{width:130,height:130,borderRadius:"50%",objectFit:"cover",border:"3px solid #F0E8E5",boxShadow:"0 4px 20px rgba(46,38,35,.12)"}}/>
             <div>
               <p className="t-pink" style={{fontWeight:600,fontSize:"1.05rem"}}>Hi, I'm Bun AI! 🩷</p>
               <p className="t-muted" style={{fontSize:".82rem",marginTop:".4rem",maxWidth:260,lineHeight:1.55}}>Ask me anything about your bunny.</p>
