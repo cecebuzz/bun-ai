@@ -642,7 +642,6 @@ function Setup({t,onDone}){
 
 // ── Chat ───────────────────────────────────────────────────────
 function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
-  const accessToken = premium ? (load(K.email,null) || PREMIUM_CODE) : null;
   const [msgs,setMsgs]=useState(()=>load(K.chat,[]));
   const [input,setInput]=useState("");
   const [loading,setLoading]=useState(false);
@@ -661,6 +660,7 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
     if(!text||loading)return;
     if(freeHit){onPaywall();return;}
     if(dailyHit)return;
+    const accessToken = premium ? (load(K.email,null) || PREMIUM_CODE) : "FREE";
     const next=[...msgs,{role:"user",content:text}];
     setMsgs(next);setInput("");setLoading(true);
     const apiMsgs=next.slice(-5).map(({role,content})=>({role,content}));
@@ -801,7 +801,7 @@ function Litter({t,rabbit,premium,litter,setLitter,onLock,go}){
   const [calView,setCalView]=useState(false);
   const [openLesson,setOpenLesson]=useState(null);
   const [qa,setQa]=useState({challenge:"",neutered:"",space:""});
-  if(!premium)return <Locked t={t} onLock={onLock}><LitterPreview/></Locked>;
+  if(!premium)return <Locked t={t} onLock={onLock}><LitterPreview onLock={onLock}/></Locked>;
   if(ls.phase==="assessment"){
     const ready=qa.challenge&&qa.neutered&&qa.space;
     return (
@@ -1004,7 +1004,8 @@ function LitterLessonCard({lesson,isDone,onComplete,readOnly=false}){
     </div>
   );
 }
-function LitterPreview(){
+function LitterPreview({onLock}){
+  const lesson=LITTER_LESSONS[0];
   return (
     <div className="space-y-lg">
       <div style={{textAlign:"center",padding:"1rem 0 .5rem"}}>
@@ -1012,8 +1013,42 @@ function LitterPreview(){
         <h2 style={{fontWeight:600,fontSize:"1.1rem"}}>Litter Training Journey</h2>
         <p className="t-muted" style={{fontSize:".82rem",marginTop:".4rem"}}>A personalised 15-day program.</p>
       </div>
-      {[0,1,2].map(i=>(
-        <div key={i} className="card" style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem",opacity:i===0?1:.5}}>
+
+      {/* Jour 1 tronqué */}
+      <div className="card" style={{overflow:"hidden",border:"1.5px solid #EAE0D8"}}>
+        <div style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem"}}>
+          <div style={{width:44,height:44,borderRadius:13,background:"rgba(201,104,120,.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontSize:".55rem",fontWeight:700,color:"#C96878",textTransform:"uppercase"}}>Day</span>
+            <span style={{fontSize:".95rem",fontWeight:700,color:"#C96878",lineHeight:1}}>1</span>
+          </div>
+          <p style={{fontWeight:600,fontSize:".9rem"}}>{lesson.title}</p>
+        </div>
+        <div style={{padding:"0 1.1rem 1.1rem",display:"flex",flexDirection:"column",gap:".85rem"}}>
+          <div style={{height:1,background:"#EAE0D8"}}/>
+          <div><p className="section-label" style={{marginBottom:".4rem"}}>❌ What most owners get wrong</p>
+            <p style={{fontSize:".84rem",lineHeight:1.7,color:"rgba(46,38,35,.75)"}}>{lesson.wrong}</p>
+          </div>
+          {/* Insight tronqué + voile */}
+          <div style={{position:"relative"}}>
+            <div className="insight-box" style={{overflow:"hidden",maxHeight:72,WebkitMaskImage:"linear-gradient(to bottom, black 30%, transparent 100%)"}}>
+              <p className="section-label" style={{marginBottom:".4rem",color:"#C96878"}}>💡 Key insight</p>
+              <p style={{fontSize:".84rem",lineHeight:1.7}}>{lesson.insight}</p>
+            </div>
+          </div>
+        </div>
+        {/* Paywall overlay */}
+        <div style={{background:"linear-gradient(to bottom, rgba(246,241,236,0) 0%, rgba(246,241,236,.97) 40%)",padding:"2rem 1.1rem 1.1rem",textAlign:"center",marginTop:"-1rem"}}>
+          <p style={{fontWeight:600,fontSize:".9rem",marginBottom:".3rem"}}>Continue the 15-day journey</p>
+          <p className="t-muted" style={{fontSize:".78rem",lineHeight:1.55,marginBottom:"1rem"}}>Get all 15 lessons, daily missions and Céline's coaching.</p>
+          <button onClick={onLock} className="btn" style={{padding:".7rem 1.5rem",boxShadow:"0 4px 16px rgba(201,104,120,.3)"}}>
+            <IcCrown s={15}/> Unlock Premium
+          </button>
+        </div>
+      </div>
+
+      {/* Jours verrouillés */}
+      {[1,2].map(i=>(
+        <div key={i} className="card" style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem",opacity:.4}}>
           <div style={{width:44,height:44,borderRadius:13,background:"rgba(201,104,120,.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontSize:".55rem",fontWeight:700,color:"#C96878",textTransform:"uppercase"}}>Day</span>
             <span style={{fontSize:".95rem",fontWeight:700,color:"#C96878",lineHeight:1}}>{i+1}</span>
@@ -1037,7 +1072,7 @@ function BondingJourney({t,rabbit,premium,bonding,setBonding,onLock,go}){
   const [calView,setCalView]=useState(false);
   const [openDay,setOpenDay]=useState(null);
 
-  if(!premium)return <Locked t={t} onLock={onLock}><BondingPreview/></Locked>;
+  if(!premium)return <Locked t={t} onLock={onLock}><BondingPreview onLock={onLock}/></Locked>;
 
   const currentDay=bs.currentDay||1;
   const completedDays=bs.completedDays||[];
@@ -1369,7 +1404,9 @@ function BondingDayCard({content,theme,dayNum,isDone,isBonusSunday,bondScore,bon
   );
 }
 
-function BondingPreview(){
+function BondingPreview({onLock}){
+  const content=BONDING_CONTENT[1];
+  const theme=THEME_META[1];
   return (
     <div className="space-y-lg">
       <div style={{textAlign:"center",padding:"1rem 0 .5rem"}}>
@@ -1377,15 +1414,52 @@ function BondingPreview(){
         <h2 style={{fontWeight:600,fontSize:"1.1rem"}}>8-Week Bonding Journey</h2>
         <p className="t-muted" style={{fontSize:".82rem",marginTop:".4rem"}}>A daily companion for a deeper relationship.</p>
       </div>
-      {[{day:1,theme:THEME_META[1]},{day:2,theme:THEME_META[2]},{day:7,theme:THEME_META[7]}].map(({day,theme},i)=>(
-        <div key={day} className="card" style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem",opacity:i===0?1:.5}}>
+
+      {/* Jour 1 tronqué */}
+      <div className="card" style={{overflow:"hidden",border:"1.5px solid #EAE0D8"}}>
+        <div style={{padding:"1rem 1.1rem",display:"flex",alignItems:"flex-start",gap:".85rem"}}>
+          <div style={{width:48,height:48,borderRadius:14,background:`${theme.color}18`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+            <span style={{fontSize:".55rem",fontWeight:700,color:theme.color,textTransform:"uppercase",lineHeight:1}}>Day</span>
+            <span style={{fontSize:"1rem",fontWeight:700,color:theme.color,lineHeight:1.1}}>1</span>
+          </div>
+          <div style={{flex:1}}>
+            <span className="bond-theme-tag" style={{background:`${theme.color}15`,color:theme.color,marginBottom:".3rem",display:"inline-flex"}}>{theme.emoji} {theme.label}</span>
+            <p style={{fontWeight:600,fontSize:".9rem"}}>{content.title}</p>
+          </div>
+        </div>
+        <div style={{padding:"0 1.1rem 0",display:"flex",flexDirection:"column",gap:".85rem"}}>
+          <div style={{height:1,background:"#EAE0D8"}}/>
+          <div><p className="section-label" style={{marginBottom:".4rem"}}>✨ Why it matters</p>
+            <p style={{fontSize:".84rem",lineHeight:1.75,color:"rgba(46,38,35,.8)"}}>{content.why}</p>
+          </div>
+          {/* Mission tronquée + voile */}
+          <div style={{position:"relative",overflow:"hidden",maxHeight:80,WebkitMaskImage:"linear-gradient(to bottom, black 20%, transparent 100%)"}}>
+            <div className="insight-box">
+              <p className="section-label" style={{marginBottom:".4rem",color:"#C96878"}}>🐰 How rabbits learn it</p>
+              <p style={{fontSize:".84rem",lineHeight:1.75}}>{content.how}</p>
+            </div>
+          </div>
+        </div>
+        {/* Paywall overlay */}
+        <div style={{background:"linear-gradient(to bottom, rgba(246,241,236,0) 0%, rgba(246,241,236,.97) 40%)",padding:"2rem 1.1rem 1.1rem",textAlign:"center",marginTop:"-1rem"}}>
+          <p style={{fontWeight:600,fontSize:".9rem",marginBottom:".3rem"}}>Start the 8-week journey</p>
+          <p className="t-muted" style={{fontSize:".78rem",lineHeight:1.55,marginBottom:"1rem"}}>56 days of lessons, reflections and Céline's personal stories.</p>
+          <button onClick={onLock} className="btn" style={{padding:".7rem 1.5rem",boxShadow:"0 4px 16px rgba(201,104,120,.3)"}}>
+            <IcCrown s={15}/> Unlock Premium
+          </button>
+        </div>
+      </div>
+
+      {/* Jours verrouillés */}
+      {[{day:2,theme:THEME_META[2]},{day:7,theme:THEME_META[7]}].map(({day,theme})=>(
+        <div key={day} className="card" style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem",opacity:.4}}>
           <div style={{width:44,height:44,borderRadius:13,background:`${theme.color}15`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontSize:".55rem",fontWeight:700,color:theme.color,textTransform:"uppercase"}}>Day</span>
             <span style={{fontSize:".95rem",fontWeight:700,color:theme.color,lineHeight:1}}>{day}</span>
           </div>
           <div>
-            <span className="bond-theme-tag" style={{background:`${theme.color}15`,color:theme.color,marginBottom:".3rem",display:"inline-flex"}}>{theme.emoji} {theme.label}</span>
-            <p style={{fontWeight:600,fontSize:".875rem"}}>{BONDING_CONTENT[day]?.title}</p>
+            <span className="bond-theme-tag" style={{background:`${theme.color}15`,color:theme.color,display:"inline-flex"}}>{theme.emoji} {theme.label}</span>
+            <p style={{fontWeight:600,fontSize:".875rem",marginTop:".2rem"}}>{BONDING_CONTENT[day]?.title}</p>
           </div>
           <span style={{marginLeft:"auto",color:"rgba(46,38,35,.25)"}}><IcLock s={16}/></span>
         </div>
