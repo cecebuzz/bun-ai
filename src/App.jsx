@@ -716,11 +716,6 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
           </>
         )}
       </div>
-      {/* DEBUG TEMPORAIRE — à retirer après diagnostic */}
-      <div style={{flexShrink:0,marginTop:".5rem",padding:".5rem .75rem",background:"#fff8e1",border:"1px solid #ffe082",borderRadius:8,fontSize:".72rem",color:"#666",fontFamily:"monospace",wordBreak:"break-all"}}>
-        premium: <strong style={{color:premium?"#2d7a4a":"#a0272e"}}>{String(premium)}</strong>
-        {" · "}token: <strong style={{color:accessToken?"#2d7a4a":"#a0272e"}}>{accessToken===null?"null":String(accessToken)}</strong>
-      </div>
       {dailyHit ? (
         <div style={{background:"rgba(201,104,120,.07)",borderRadius:16,padding:".9rem",textAlign:"center",fontSize:".82rem",color:"#C96878",flexShrink:0,marginTop:".75rem"}}>{t("dailyDone")}</div>
       ) : freeHit ? (
