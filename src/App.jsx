@@ -1,3 +1,4 @@
+// v2
 import { useState, useEffect, useRef } from "react";
 
 const MODEL = "claude-haiku-4-5";
