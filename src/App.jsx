@@ -801,7 +801,7 @@ function Litter({t,rabbit,premium,litter,setLitter,onLock,go}){
   const [calView,setCalView]=useState(false);
   const [openLesson,setOpenLesson]=useState(null);
   const [qa,setQa]=useState({challenge:"",neutered:"",space:""});
-  if(!premium)return <Locked t={t} onLock={onLock}><LitterPreview onLock={onLock}/></Locked>;
+  if(!premium)return <LitterPreview onLock={onLock}/>;
   if(ls.phase==="assessment"){
     const ready=qa.challenge&&qa.neutered&&qa.space;
     return (
@@ -1072,7 +1072,7 @@ function BondingJourney({t,rabbit,premium,bonding,setBonding,onLock,go}){
   const [calView,setCalView]=useState(false);
   const [openDay,setOpenDay]=useState(null);
 
-  if(!premium)return <Locked t={t} onLock={onLock}><BondingPreview onLock={onLock}/></Locked>;
+  if(!premium)return <BondingPreview onLock={onLock}/>;
 
   const currentDay=bs.currentDay||1;
   const completedDays=bs.completedDays||[];
