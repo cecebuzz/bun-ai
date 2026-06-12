@@ -1,4 +1,4 @@
-// v2
+// v3
 import { useState, useEffect, useRef } from "react";
 
 const MODEL = "claude-haiku-4-5";
