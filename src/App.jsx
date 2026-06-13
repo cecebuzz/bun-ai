@@ -41,7 +41,8 @@ const CSS = `
 .bar-fill{background:linear-gradient(90deg,#C96878,#e08a96);border-radius:999px;transition:width .6s cubic-bezier(.4,0,.2,1);}
 .header-blur{background:rgba(246,241,236,.9);backdrop-filter:blur(12px);border-bottom:1px solid #EAE0D8;}
 .sidebar{background:rgba(255,253,252,.6);border-right:1px solid #EAE0D8;}
-@media(max-width:640px){.desktop-sidebar{display:none !important;}}
+@media(max-width:640px){.desktop-sidebar{display:none !important;}.hamburger-btn{display:flex !important;}}
+.hamburger-btn{display:none;}
 .modal-overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;padding:1rem;background:rgba(30,20,18,.5);backdrop-filter:blur(4px);}
 @media(min-width:640px){.modal-overlay{align-items:center;}}
 .modal-card{background:#FFFDFC;border:1px solid #EAE0D8;border-radius:28px;box-shadow:0 24px 60px rgba(46,38,35,.22);width:100%;max-width:400px;padding:2rem;animation:slideUp .28s cubic-bezier(.4,0,.2,1);}
@@ -55,6 +56,8 @@ const CSS = `
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:#E4D0CC;border-radius:999px;}
 button:focus-visible{outline:2px solid #C96878;outline-offset:2px;}
+button,a,.chip,.navlink{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+@media(max-width:640px){.mobile-sidebar-overlay{position:fixed;inset:0;z-index:40;background:rgba(30,20,18,.4);backdrop-filter:blur(2px);}.mobile-sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;z-index:41;background:#FFFDFC;border-right:1px solid #EAE0D8;padding:1.75rem 1rem;overflow-y:auto;animation:slideRight .2s ease;}}
 .space-y>*+*{margin-top:.75rem;}
 .space-y-lg>*+*{margin-top:1.25rem;}
 .flex{display:flex;}.flex-col{flex-direction:column;}.flex-1{flex:1;}
@@ -70,6 +73,7 @@ button:focus-visible{outline:2px solid #C96878;outline-offset:2px;}
 .typing-dot:nth-child(2){animation-delay:.15s;}
 .typing-dot:nth-child(3){animation-delay:.3s;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideRight{from{transform:translateX(-100%);}to{transform:translateX(0);}}
 .fade-in{animation:fadeIn .3s ease;}
 .bond-theme-tag{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .75rem;border-radius:999px;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
 .journal-card{background:linear-gradient(135deg,#FFF8F6,#FFFCFB);border:1px solid #F0DDD8;border-radius:20px;padding:1.25rem;}
@@ -101,6 +105,7 @@ const IcPen    = p=><Svg {...p}><path {...SI} d="M12 20h9"/><path {...SI} d="M16
 const IcBook   = p=><Svg {...p}><path {...SI} d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path {...SI} d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></Svg>;
 const IcX      = p=><Svg {...p}><path {...SI} d="M18 6L6 18M6 6l12 12"/></Svg>;
 const IcUser   = p=><Svg {...p}><circle {...SI} cx="12" cy="8" r="3.6"/><path {...SI} d="M5 20c0-3.9 3.1-6.6 7-6.6s7 2.7 7 6.6"/></Svg>;
+const IcMenu   = p=><Svg {...p}><path {...SI} d="M4 7h16M4 12h16M4 17h16"/></Svg>;
 
 const BRAND_IMG = "https://i.postimg.cc/xTGDCc5k/buzz-icone.png";
 const IcRabbit = ({s=22}) => <img src={BRAND_IMG} alt="Buzz" width={s} height={s} style={{width:s,height:s,objectFit:"contain",display:"block"}}/>;
@@ -439,6 +444,7 @@ export default function App(){
   const [freeUsed,setFreeUsed]=useState(()=>load(K.free,0));
   const [paywall,setPaywall]=useState(false);
   const [codeMode,setCodeMode]=useState(false);
+  const [sidebarOpen,setSidebarOpen]=useState(false);
   const [bonding,setBonding]=useState(()=>load(K.bonding,null));
   const [litter,setLitter]=useState(()=>load(K.litter,null));
   const [pData,setPData]=useState(()=>{const d=load(K.pdate,today());return {count:d===today()?load(K.pmsgs,0):0,date:today()};});
@@ -515,6 +521,7 @@ export default function App(){
         <div style={{flex:1,minWidth:0,display:"flex",flexDirection:"column"}}>
           <header className="header-blur" style={{position:"sticky",top:0,zIndex:20,padding:".75rem 1rem",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <div style={{display:"flex",alignItems:"center",gap:".5rem"}}>
+              <button onClick={()=>setSidebarOpen(true)} className="hamburger-btn" style={{background:"none",border:"none",cursor:"pointer",color:"rgba(46,38,35,.6)",padding:".25rem",alignItems:"center"}}><IcMenu s={22}/></button>
               <span className="t-pink"><IcRabbit s={32}/></span>
               <span style={{fontWeight:600,fontSize:"1.1rem"}}>Bun AI</span>
             </div>
@@ -537,6 +544,26 @@ export default function App(){
           </main>
         </div>
       </div>
+
+      {sidebarOpen&&(
+        <>
+          <div className="mobile-sidebar-overlay" onClick={()=>setSidebarOpen(false)}/>
+          <div className="mobile-sidebar">
+            <div style={{textAlign:"center",marginBottom:"2rem"}}>
+              <div style={{display:"flex",justifyContent:"center"}} className="t-pink"><IcRabbit s={50}/></div>
+              <div style={{fontWeight:600,fontSize:"1.35rem",marginTop:".5rem"}}>Bun AI</div>
+              {premium&&<div className="pill-premium" style={{marginTop:".5rem",display:"inline-flex"}}><IcCrown s={11}/> PREMIUM</div>}
+            </div>
+            <nav style={{display:"flex",flexDirection:"column",gap:".25rem"}}>
+              {NAV.map(({id,label,Icon})=>(
+                <button key={id} onClick={()=>{setView(id);setSidebarOpen(false);}} className={`navlink ${view===id?"navlink-on":""}`}>
+                  <span style={{color:view===id?"#C96878":"rgba(46,38,35,.4)"}}><Icon s={18}/></span>{label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </>
+      )}
 
       <nav className="header-blur" style={{position:"fixed",bottom:0,left:0,right:0,zIndex:20,display:"flex",justifyContent:"space-around",padding:".4rem 0 .6rem",borderTop:"1px solid #EAE0D8"}}>
         {NAV.map(({id,label,Icon})=>(
@@ -607,7 +634,7 @@ function ModuleCard({Icon,title,desc,onClick,locked}){
         <span style={{color:"rgba(46,38,35,.25)"}}>{locked?<IcLock s={16}/>:<IcArrow s={16}/>}</span>
       </div>
       <div>
-        <div style={{fontWeight:600,fontSize:".9rem",lineHeight:1.2}}>{title}</div>
+        <div style={{fontWeight:600,fontSize:".9rem",lineHeight:1.2,color:"#C96878"}}>{title}</div>
         <div className="t-muted" style={{fontSize:".75rem",marginTop:".25rem",lineHeight:1.4}}>{desc}</div>
       </div>
     </button>
@@ -1014,33 +1041,38 @@ function LitterPreview({onLock}){
         <p className="t-muted" style={{fontSize:".82rem",marginTop:".4rem"}}>A personalised 15-day program.</p>
       </div>
 
-      {/* Jour 1 tronqué */}
-      <div className="card" style={{overflow:"hidden",border:"1.5px solid #EAE0D8"}}>
-        <div style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem"}}>
-          <div style={{width:44,height:44,borderRadius:13,background:"rgba(201,104,120,.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-            <span style={{fontSize:".55rem",fontWeight:700,color:"#C96878",textTransform:"uppercase"}}>Day</span>
-            <span style={{fontSize:".95rem",fontWeight:700,color:"#C96878",lineHeight:1}}>1</span>
-          </div>
-          <p style={{fontWeight:600,fontSize:".9rem"}}>{lesson.title}</p>
-        </div>
-        <div style={{padding:"0 1.1rem 1.1rem",display:"flex",flexDirection:"column",gap:".85rem"}}>
-          <div style={{height:1,background:"#EAE0D8"}}/>
-          <div><p className="section-label" style={{marginBottom:".4rem"}}>❌ What most owners get wrong</p>
-            <p style={{fontSize:".84rem",lineHeight:1.7,color:"rgba(46,38,35,.75)"}}>{lesson.wrong}</p>
-          </div>
-          {/* Insight tronqué + voile */}
-          <div style={{position:"relative"}}>
-            <div className="insight-box" style={{overflow:"hidden",maxHeight:72,WebkitMaskImage:"linear-gradient(to bottom, black 30%, transparent 100%)"}}>
-              <p className="section-label" style={{marginBottom:".4rem",color:"#C96878"}}>💡 Key insight</p>
-              <p style={{fontSize:".84rem",lineHeight:1.7}}>{lesson.insight}</p>
+      {/* Jour 1 flouté — structure visible, texte illisible */}
+      <div style={{position:"relative"}}>
+        <div style={{filter:"blur(5px)",pointerEvents:"none",userSelect:"none"}}>
+          <div className="card" style={{overflow:"hidden",border:"1.5px solid #EAE0D8"}}>
+            <div style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem"}}>
+              <div style={{width:44,height:44,borderRadius:13,background:"rgba(201,104,120,.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                <span style={{fontSize:".55rem",fontWeight:700,color:"#C96878",textTransform:"uppercase"}}>Day</span>
+                <span style={{fontSize:".95rem",fontWeight:700,color:"#C96878",lineHeight:1}}>1</span>
+              </div>
+              <p style={{fontWeight:600,fontSize:".9rem"}}>{lesson.title}</p>
+            </div>
+            <div style={{padding:"0 1.1rem 1.1rem",display:"flex",flexDirection:"column",gap:".85rem"}}>
+              <div style={{height:1,background:"#EAE0D8"}}/>
+              <div><p className="section-label" style={{marginBottom:".4rem"}}>❌ What most owners get wrong</p>
+                <p style={{fontSize:".84rem",lineHeight:1.7,color:"rgba(46,38,35,.75)"}}>{lesson.wrong}</p>
+              </div>
+              <div className="insight-box">
+                <p className="section-label" style={{marginBottom:".4rem",color:"#C96878"}}>💡 Key insight</p>
+                <p style={{fontSize:".84rem",lineHeight:1.7}}>{lesson.insight}</p>
+              </div>
+              <div className="mission-box">
+                <p className="section-label" style={{marginBottom:".4rem"}}>🎯 Today's mission</p>
+                <p style={{fontSize:".84rem",lineHeight:1.7}}>{lesson.mission}</p>
+              </div>
             </div>
           </div>
         </div>
-        {/* Paywall overlay */}
-        <div style={{background:"linear-gradient(to bottom, rgba(246,241,236,0) 0%, rgba(246,241,236,.97) 40%)",padding:"2rem 1.1rem 1.1rem",textAlign:"center",marginTop:"-1rem"}}>
-          <p style={{fontWeight:600,fontSize:".9rem",marginBottom:".3rem"}}>Continue the 15-day journey</p>
-          <p className="t-muted" style={{fontSize:".78rem",lineHeight:1.55,marginBottom:"1rem"}}>Get all 15 lessons, daily missions and Céline's coaching.</p>
-          <button onClick={onLock} className="btn" style={{padding:".7rem 1.5rem",boxShadow:"0 4px 16px rgba(201,104,120,.3)"}}>
+        {/* Overlay paywall */}
+        <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(246,241,236,.6)",borderRadius:20,padding:"1.5rem",textAlign:"center"}}>
+          <p style={{fontWeight:700,fontSize:"1.1rem",marginBottom:".4rem"}}>15-Day Litter Challenge</p>
+          <p className="t-muted" style={{fontSize:".82rem",lineHeight:1.55,marginBottom:"1.1rem",maxWidth:280}}>Daily lessons, missions and Céline's proven techniques to litter train your rabbit.</p>
+          <button onClick={onLock} className="btn" style={{padding:".75rem 1.8rem",boxShadow:"0 4px 16px rgba(201,104,120,.3)"}}>
             <IcCrown s={15}/> Unlock Premium
           </button>
         </div>
@@ -1443,7 +1475,7 @@ function BondingPreview({onLock}){
         {/* Paywall overlay */}
         <div style={{background:"linear-gradient(to bottom, rgba(246,241,236,0) 0%, rgba(246,241,236,.97) 40%)",padding:"2rem 1.1rem 1.1rem",textAlign:"center",marginTop:"-1rem"}}>
           <p style={{fontWeight:600,fontSize:".9rem",marginBottom:".3rem"}}>Start the 8-week journey</p>
-          <p className="t-muted" style={{fontSize:".78rem",lineHeight:1.55,marginBottom:"1rem"}}>56 days of lessons, reflections and Céline's personal stories.</p>
+          <p className="t-muted" style={{fontSize:".78rem",lineHeight:1.55,marginBottom:"1rem"}}>56 days of lessons, real techniques to apply, and Céline's personal stories.</p>
           <button onClick={onLock} className="btn" style={{padding:".7rem 1.5rem",boxShadow:"0 4px 16px rgba(201,104,120,.3)"}}>
             <IcCrown s={15}/> Unlock Premium
           </button>
@@ -1451,7 +1483,7 @@ function BondingPreview({onLock}){
       </div>
 
       {/* Jours verrouillés */}
-      {[{day:2,theme:THEME_META[2]},{day:7,theme:THEME_META[7]}].map(({day,theme})=>(
+      {[{day:2,theme:THEME_META[2]},{day:3,theme:THEME_META[3]}].map(({day,theme})=>(
         <div key={day} className="card" style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem",opacity:.4}}>
           <div style={{width:44,height:44,borderRadius:13,background:`${theme.color}15`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
             <span style={{fontSize:".55rem",fontWeight:700,color:theme.color,textTransform:"uppercase"}}>Day</span>
