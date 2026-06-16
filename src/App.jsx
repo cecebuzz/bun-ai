@@ -613,7 +613,7 @@ function Home({t,rabbit,bondScore,litterDay,tip,premium,go}){
         <p className="section-label" style={{marginBottom:".6rem"}}>{premium?"Your tools":"What's inside"}</p>
         <div className="grid-2">
           <ModuleCard Icon={IcChat}   title={t("ask")}     desc={t("descAsk")}     onClick={()=>go("chat")}/>
-          <ModuleCard Icon={IcHealth} title={t("health")}  desc={t("descHealth")}  onClick={()=>go("health")}  locked={!premium}/>
+          <ModuleCard Icon={IcHealth} title={t("health")}  desc={t("descHealth")}  onClick={()=>go("health")}/>
           <ModuleCard Icon={IcLeaf}   title={t("litter")}  desc={t("descLitter")}  onClick={()=>go("litter")}  locked={!premium}/>
           <ModuleCard Icon={IcHeart}  title={t("bonding")} desc={t("descBonding")} onClick={()=>go("bonding")} locked={!premium}/>
         </div>
@@ -816,7 +816,7 @@ function Health({t,rabbit,premium,go,onLock}){
       <p className="t-muted" style={{fontSize:".72rem",textAlign:"center"}}>{t("notVet")}</p>
     </div>
   );
-  return premium?body:<Locked t={t} onLock={onLock}>{body}</Locked>;
+  return body;
 }
 
 // ── LITTER ─────────────────────────────────────────────────────
@@ -1032,63 +1032,32 @@ function LitterLessonCard({lesson,isDone,onComplete,readOnly=false}){
   );
 }
 function LitterPreview({onLock}){
-  const lesson=LITTER_LESSONS[0];
   return (
     <div className="space-y-lg">
       <div style={{textAlign:"center",padding:"1rem 0 .5rem"}}>
         <div style={{width:52,height:52,borderRadius:"50%",background:"rgba(201,104,120,.1)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto .75rem"}}><IcLeaf s={24} style={{color:"#C96878"}}/></div>
-        <h2 style={{fontWeight:600,fontSize:"1.1rem"}}>Litter Training Journey</h2>
-        <p className="t-muted" style={{fontSize:".82rem",marginTop:".4rem"}}>A personalised 15-day program.</p>
+        <h2 style={{fontWeight:600,fontSize:"1.1rem"}}>15-Day Litter Challenge</h2>
+        <p className="t-muted" style={{fontSize:".82rem",marginTop:".4rem",lineHeight:1.6,maxWidth:280,margin:".4rem auto 0"}}>A proven daily program to litter train your rabbit — one lesson, one mission, one day at a time.</p>
       </div>
 
-      {/* Jour 1 flouté — structure visible, texte illisible */}
-      <div style={{position:"relative"}}>
-        <div style={{filter:"blur(5px)",pointerEvents:"none",userSelect:"none"}}>
-          <div className="card" style={{overflow:"hidden",border:"1.5px solid #EAE0D8"}}>
-            <div style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem"}}>
-              <div style={{width:44,height:44,borderRadius:13,background:"rgba(201,104,120,.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                <span style={{fontSize:".55rem",fontWeight:700,color:"#C96878",textTransform:"uppercase"}}>Day</span>
-                <span style={{fontSize:".95rem",fontWeight:700,color:"#C96878",lineHeight:1}}>1</span>
-              </div>
-              <p style={{fontWeight:600,fontSize:".9rem"}}>{lesson.title}</p>
-            </div>
-            <div style={{padding:"0 1.1rem 1.1rem",display:"flex",flexDirection:"column",gap:".85rem"}}>
-              <div style={{height:1,background:"#EAE0D8"}}/>
-              <div><p className="section-label" style={{marginBottom:".4rem"}}>❌ What most owners get wrong</p>
-                <p style={{fontSize:".84rem",lineHeight:1.7,color:"rgba(46,38,35,.75)"}}>{lesson.wrong}</p>
-              </div>
-              <div className="insight-box">
-                <p className="section-label" style={{marginBottom:".4rem",color:"#C96878"}}>💡 Key insight</p>
-                <p style={{fontSize:".84rem",lineHeight:1.7}}>{lesson.insight}</p>
-              </div>
-              <div className="mission-box">
-                <p className="section-label" style={{marginBottom:".4rem"}}>🎯 Today's mission</p>
-                <p style={{fontSize:".84rem",lineHeight:1.7}}>{lesson.mission}</p>
-              </div>
-            </div>
+      {/* Calendrier 15 cases */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:".5rem"}}>
+        {Array.from({length:15},(_,i)=>(
+          <div key={i} style={{background:"#FFFDFC",border:"1.5px solid #EAE0D8",borderRadius:14,padding:".75rem .3rem",display:"flex",flexDirection:"column",alignItems:"center",gap:".35rem"}}>
+            <span style={{fontSize:".55rem",fontWeight:700,color:"rgba(46,38,35,.35)",textTransform:"uppercase"}}>Day</span>
+            <span style={{fontWeight:700,fontSize:"1rem",color:"rgba(46,38,35,.25)"}}>{i+1}</span>
+            <IcLock s={13} style={{color:"rgba(201,104,120,.4)"}}/>
           </div>
-        </div>
-        {/* Overlay paywall */}
-        <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(246,241,236,.6)",borderRadius:20,padding:"1.5rem",textAlign:"center"}}>
-          <p style={{fontWeight:700,fontSize:"1.1rem",marginBottom:".4rem"}}>15-Day Litter Challenge</p>
-          <p className="t-muted" style={{fontSize:".82rem",lineHeight:1.55,marginBottom:"1.1rem",maxWidth:280}}>Daily lessons, missions and Céline's proven techniques to litter train your rabbit.</p>
-          <button onClick={onLock} className="btn" style={{padding:".75rem 1.8rem",boxShadow:"0 4px 16px rgba(201,104,120,.3)"}}>
-            <IcCrown s={15}/> Unlock Premium
-          </button>
-        </div>
+        ))}
       </div>
 
-      {/* Jours verrouillés */}
-      {[1,2].map(i=>(
-        <div key={i} className="card" style={{padding:"1rem 1.1rem",display:"flex",alignItems:"center",gap:".85rem",opacity:.4}}>
-          <div style={{width:44,height:44,borderRadius:13,background:"rgba(201,104,120,.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-            <span style={{fontSize:".55rem",fontWeight:700,color:"#C96878",textTransform:"uppercase"}}>Day</span>
-            <span style={{fontSize:".95rem",fontWeight:700,color:"#C96878",lineHeight:1}}>{i+1}</span>
-          </div>
-          <p style={{fontWeight:600,fontSize:".875rem"}}>{LITTER_LESSONS[i].title}</p>
-          <span style={{marginLeft:"auto",color:"rgba(46,38,35,.25)"}}><IcLock s={16}/></span>
-        </div>
-      ))}
+      <p style={{textAlign:"center",fontSize:".82rem",lineHeight:1.65,color:"rgba(46,38,35,.6)",padding:"0 1rem"}}>
+        Unlock all 15 days — including Céline's key insights, daily missions and her most effective technique 🐰
+      </p>
+
+      <button onClick={onLock} className="btn w-full" style={{padding:".85rem",boxShadow:"0 4px 16px rgba(201,104,120,.3)"}}>
+        <IcCrown s={15}/> Unlock the Challenge
+      </button>
     </div>
   );
 }
