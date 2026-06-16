@@ -465,7 +465,7 @@ export default function App(){
         <Style/>
         <div style={{maxWidth:360,width:"100%",textAlign:"center"}}>
           <div style={{display:"flex",justifyContent:"center",marginBottom:"1rem"}} className="t-pink"><IcRabbit s={66}/></div>
-          <h1 style={{fontWeight:600,fontSize:"2.1rem"}}>Welcome to Bun AI</h1>
+          <h1 style={{fontWeight:600,fontSize:"2.1rem"}}>Welcome to MyBunny</h1>
           <p className="t-muted" style={{fontSize:".9rem",marginTop:".6rem",marginBottom:"2.25rem",lineHeight:1.6}}>{T.tag}</p>
           <button onClick={()=>{setWelcomed(true);setView("chat");}} className="btn w-full" style={{padding:".85rem",fontSize:".95rem"}}>
             Let's go <IcArrow s={18}/>
@@ -506,7 +506,7 @@ export default function App(){
         <aside className="sidebar desktop-sidebar" style={{width:220,flexShrink:0,display:"flex",flexDirection:"column",padding:"1.75rem 1rem",position:"sticky",top:0,height:"100vh",overflowY:"auto"}}>
           <div style={{textAlign:"center",marginBottom:"2rem"}}>
             <div style={{display:"flex",justifyContent:"center"}} className="t-pink"><IcRabbit s={50}/></div>
-            <div style={{fontWeight:600,fontSize:"1.35rem",marginTop:".5rem"}}>Bun AI</div>
+            <div style={{fontWeight:600,fontSize:"1.35rem",marginTop:".5rem"}}>MyBunny</div>
             {premium&&<div className="pill-premium" style={{marginTop:".5rem",display:"inline-flex"}}><IcCrown s={11}/> PREMIUM</div>}
           </div>
           <nav style={{display:"flex",flexDirection:"column",gap:".25rem"}}>
@@ -523,7 +523,7 @@ export default function App(){
             <div style={{display:"flex",alignItems:"center",gap:".5rem"}}>
               <button onClick={()=>setSidebarOpen(true)} className="hamburger-btn" style={{background:"none",border:"none",cursor:"pointer",color:"rgba(46,38,35,.6)",padding:".25rem",alignItems:"center"}}><IcMenu s={22}/></button>
               <span className="t-pink"><IcRabbit s={32}/></span>
-              <span style={{fontWeight:600,fontSize:"1.1rem"}}>Bun AI</span>
+              <span style={{fontWeight:600,fontSize:"1.1rem"}}>MyBunny</span>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:".6rem"}}>
               {premium
@@ -596,7 +596,7 @@ function Home({t,rabbit,bondScore,litterDay,tip,premium,go}){
       ) : (
         <div style={{textAlign:"center",padding:"1.5rem 0 .5rem"}}>
           <div style={{display:"flex",justifyContent:"center"}} className="t-pink"><IcRabbit s={54}/></div>
-          <h1 style={{fontSize:"2rem",fontWeight:600,marginTop:".75rem"}}>Bun AI</h1>
+          <h1 style={{fontSize:"2rem",fontWeight:600,marginTop:".75rem"}}>MyBunny</h1>
           <p className="t-muted" style={{fontSize:".875rem",marginTop:".4rem"}}>{t("tag")}</p>
         </div>
       )}
@@ -1637,7 +1637,7 @@ function Settings({t,rabbit,setRabbit,premium,email,setLitter,setBonding,onManag
 function V2Footer(){
   return (
     <div className="card" style={{marginTop:"2.5rem",padding:"1.5rem",textAlign:"center"}}>
-      <p style={{fontWeight:600,fontSize:"1rem",marginBottom:".5rem"}}>The next chapter of Bun AI 🤍</p>
+      <p style={{fontWeight:600,fontSize:"1rem",marginBottom:".5rem"}}>The next chapter of MyBunny 🤍</p>
       <p className="t-muted" style={{fontSize:".82rem",lineHeight:1.65,maxWidth:300,margin:"0 auto 1.1rem"}}>We're already working on what's next. Your ideas help shape future updates.</p>
       <a href="https://linktr.ee/Buzzthebunny" target="_blank" rel="noreferrer" className="btn-ghost" style={{display:"inline-flex",alignItems:"center",gap:".4rem",textDecoration:"none",fontSize:".82rem",fontWeight:600}}>Share Feedback</a>
     </div>
