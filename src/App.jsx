@@ -438,7 +438,7 @@ function useCountdown(targetTs){
 // ═══════════════════════════════════════════════════════════════
 export default function App(){
   const [welcomed,setWelcomed]=useState(()=>load(K.welcomed,false));
-  const [view,setView]=useState("chat");
+  const [view,setView]=useState("home");
   const [premium,setPremium]=useState(()=>load(K.premium,false));
   const [rabbit,setRabbit]=useState(()=>load(K.rabbit,null));
   const [freeUsed,setFreeUsed]=useState(()=>load(K.free,0));
@@ -467,7 +467,7 @@ export default function App(){
           <div style={{display:"flex",justifyContent:"center",marginBottom:"1rem"}} className="t-pink"><IcRabbit s={66}/></div>
           <h1 style={{fontWeight:600,fontSize:"2.1rem"}}>Welcome to MyBunny</h1>
           <p className="t-muted" style={{fontSize:".9rem",marginTop:".6rem",marginBottom:"2.25rem",lineHeight:1.6}}>{T.tag}</p>
-          <button onClick={()=>{setWelcomed(true);setView("chat");}} className="btn w-full" style={{padding:".85rem",fontSize:".95rem"}}>
+          <button onClick={()=>{setWelcomed(true);setView("home");}} className="btn w-full" style={{padding:".85rem",fontSize:".95rem"}}>
             Let's go <IcArrow s={18}/>
           </button>
         </div>
@@ -719,7 +719,7 @@ function Chat({t,rabbit,premium,freeUsed,setFreeUsed,pData,setPData,onPaywall}){
           <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",textAlign:"center",gap:"1rem",padding:"1rem"}}>
             <img src={CELINE} alt="Céline" style={{width:98,height:98,borderRadius:"50%",objectFit:"cover",border:"3px solid #F0E8E5",boxShadow:"0 4px 20px rgba(46,38,35,.12)"}}/>
             <div>
-              <p className="t-pink" style={{fontWeight:600,fontSize:"1.05rem"}}>Hi, I'm Bun AI! 🩷</p>
+              <p className="t-pink" style={{fontWeight:600,fontSize:"1.05rem"}}>Hi, I'm Céline! 🩷</p>
               <p className="t-muted" style={{fontSize:".82rem",marginTop:".4rem",maxWidth:260,lineHeight:1.55}}>Ask me anything about your bunny.</p>
             </div>
           </div>
